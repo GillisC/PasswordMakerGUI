@@ -1,0 +1,127 @@
+package gui;
+
+import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class GUI implements ChangeListener, ActionListener, ItemListener {
+        int len = 0;
+        JLabel label;
+        JSlider slider;
+        JTextField text;
+        JButton button;
+        JCheckBox upper;
+        JCheckBox symbol;
+        JCheckBox number;
+        Random random = new Random();
+        String newList = "";
+
+
+
+    public GUI() {
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel();
+
+        label = new JLabel("Password Length: 0");
+
+        slider = new JSlider(0, 50, 0); // Slider setup
+        slider.addChangeListener(this);
+        slider.setMajorTickSpacing(10);
+        slider.setMajorTickSpacing(10);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+
+        button = new JButton("Generate Password");
+        button.addActionListener(this);
+
+        text = new JTextField();
+
+        upper = new JCheckBox("Should the password include uppercase letter?");
+        upper.addItemListener(this);
+
+        symbol = new JCheckBox("Should the password include symbols?");
+        symbol.addItemListener(this);
+
+        number = new JCheckBox("Should the password include numbers?");
+        number.addItemListener(this);
+
+        panel.add(label);
+        panel.add(slider);
+        panel.add(upper);
+        panel.add(symbol);
+        panel.add(number);
+        panel.add(button);
+        panel.add(text);
+
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
+        panel.setLayout(new GridLayout(0, 1));
+
+        frame.add(panel, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Password Maker");
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+    public static void main(String[] args) {
+        new GUI();
+    }
+
+    @Override // Updates the label with the value of the slider position
+    public void stateChanged(ChangeEvent e) {
+        label.setText("Password Length: " + slider.getValue());
+        len = slider.getValue();
+    }
+
+    @Override // Event when pressing the "Generate Password" button
+    public void actionPerformed(ActionEvent e) {
+        text.setText(passwordMaker());
+    }
+
+    String passwordMaker() {
+        String charsUsed = getString();
+        String result = "";
+        for (int i=0; i<slider.getValue(); i++) {
+            int randomIndex = random.nextInt(charsUsed.length());
+             result += (charsUsed.charAt(randomIndex));
+        }
+        return result;
+    }
+
+    public String getString(){
+        String lowerCase = "abcdfghijklmnopqrstuvxyz";
+        String upperCase = "ABCDEFGHIJKLMNOPQRSTUVXYZ";
+        String symbols = "~`!@#$%^&*()_-+={[}]|:;<>.?/";
+        String numbers = "0123456789";
+        newList = "";
+
+        if (!newList.contains(lowerCase)) {
+            newList += lowerCase;
+        }
+        if (upper.isSelected() && !newList.contains(upperCase)) {
+            newList += upperCase;
+        }
+        if (symbol.isSelected() && !newList.contains(symbols)) {
+            newList += symbols;
+        }
+        if (number.isSelected() && !newList.contains(numbers)) {
+            newList += numbers;
+        }
+        System.out.println(newList);
+        return newList;
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+
+    }
+}
